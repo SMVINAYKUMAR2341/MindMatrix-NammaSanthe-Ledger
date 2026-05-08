@@ -6,13 +6,54 @@ Namma-Santhe Ledger is an Android application designed to replace traditional pa
 
 ---
 
-## 📸 App Screenshots
+## 📸 App Walkthrough
 
-*(Note: Upload your screenshots to a `docs/screenshots/` folder and name them as follows to display them here)*
-
-| Welcome | Sign Up | Login |
+### 🌟 Onboarding & Setup
+| Welcome Screen | Cloud Backup | Get Started |
 |:---:|:---:|:---:|
-| ![Welcome](docs/screenshots/welcome.jpg) | ![Sign Up](docs/screenshots/signup.jpg) | ![Login](docs/screenshots/login.jpg) |
+| ![Welcome](docs/screenshots/1001354644.jpg) | ![Cloud Backup](docs/screenshots/1001354646.jpg) | ![Get Started](docs/screenshots/1001354649.jpg) |
+| *Personalized welcome to Namma Santhe Ledger.* | *Overview of secure cloud synchronization features.* | *Final onboarding step to begin your digital journey.* |
+
+### 🔐 Authentication
+| Create Account | Sign In |
+|:---:|:---:|
+| ![Create Account](docs/screenshots/1001354650.jpg) | ![Sign In](docs/screenshots/1001354651.jpg) |
+| *Easy registration to secure your data.* | *Secure login for existing users.* |
+
+### 📊 Dashboard & Management
+| Main Dashboard | Customer List | Add New Customer |
+|:---:|:---:|:---:|
+| ![Dashboard](docs/screenshots/1001354652.jpg) | ![Customer List](docs/screenshots/1001354654.jpg) | ![Add Customer](docs/screenshots/1001354666.jpg) |
+| *Real-time overview of outstanding, credits, and payments.* | *Quick search and management of all customers.* | *Streamlined form to add new business contacts.* |
+
+### 💸 Transactions & Profile
+| Customer Profile | Recording Credit | Balance Update |
+|:---:|:---:|:---:|
+| ![Profile](docs/screenshots/1001354667.jpg) | ![Add Transaction](docs/screenshots/1001354668.jpg) | ![Updated Balance](docs/screenshots/1001354669.jpg) |
+| *Detailed view of customer balance and history.* | *Fast numeric entry for adding credits or payments.* | *Instant recalculation of outstanding amounts.* |
+
+### 🛡️ Verification & Security
+| Transaction QR | Recent Activity | App Settings |
+|:---:|:---:|:---:|
+| ![QR Confirmation](docs/screenshots/1001354670.jpg) | ![Recent Transactions](docs/screenshots/1001354677.jpg) | ![Settings](docs/screenshots/1001354678.jpg) |
+| *Secure QR code for customer confirmation.* | *Home screen view of latest transaction logs.* | *Business profile and language preferences.* |
+
+### 📈 Reports & Analytics
+| Daily Trends | Collections vs Outstanding | Summary Table |
+|:---:|:---:|:---:|
+| ![Reports Chart](docs/screenshots/1001354674.jpg) | ![Analytics Pie](docs/screenshots/1001354675.jpg) | ![Summary Table](docs/screenshots/1001354676.jpg) |
+| *Visual trends of credits vs payments over time.* | *Pie chart breakdown of collection performance.* | *Detailed text summary of 7/15/30 day activity.* |
+
+### 📄 Documentation & Exporting
+| Single Invoice | Sharing on WhatsApp | Full Ledger Export |
+|:---:|:---:|:---:|
+| ![Invoice](docs/screenshots/1001354672.jpg) | ![WhatsApp Share](docs/screenshots/1001354673.jpg) | ![Full PDF](docs/screenshots/1001354681.jpg) |
+| *Professional PDF invoice for specific transactions.* | *Direct integration for sharing statements with customers.* | *Comprehensive ledger report for business records.* |
+
+| Data Export Options | PDF Page 2 |
+|:---:|:---:|
+| ![Export Settings](docs/screenshots/1001354679.jpg) | ![PDF Detailed](docs/screenshots/1001354682.jpg) |
+| *Settings for full data backup and PDF exports.* | *Continuation of the detailed transaction ledger.* |
 
 ---
 
