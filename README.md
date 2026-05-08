@@ -62,6 +62,7 @@ Namma-Santhe Ledger is an Android application designed to replace traditional pa
 The compiled Android APK can be found locally after a build in the following directory:
 ```bash
 android/app/build/outputs/apk/debug/app-debug.apk
+https://github.com/SMVINAYKUMAR2341/MindMatrix-NammaSanthe-Ledger/tree/main/releases
 ```
 
 **For GitHub Users:** 
