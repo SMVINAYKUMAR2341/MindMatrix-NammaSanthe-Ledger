@@ -30,7 +30,7 @@ class GeminiSettingsStore(private val context: Context) {
     val settings: Flow<GeminiSettings> = context.geminiDataStore.data.map { prefs ->
         val savedKey = prefs[Keys.API_KEY]
         GeminiSettings(
-            apiKey = if (savedKey.isNullOrEmpty()) "AIzaSyC6pjFguQ7FhJZn0dNx8WH0PtHFoCOR3nY" else savedKey,
+            apiKey = if (savedKey.isNullOrEmpty()) "YOUR_GEMINI_API_KEY" else savedKey,
             useGeminiForOcr = prefs[Keys.USE_GEMINI] ?: true,
             geminiEnabled = prefs[Keys.GEMINI_ENABLED] ?: true
         )
@@ -51,7 +51,7 @@ class GeminiSettingsStore(private val context: Context) {
      */
     fun getApiKey(): String = runBlocking {
         val savedKey = context.geminiDataStore.data.first()[Keys.API_KEY]
-        if (savedKey.isNullOrEmpty()) "AIzaSyC6pjFguQ7FhJZn0dNx8WH0PtHFoCOR3nY" else savedKey
+        if (savedKey.isNullOrEmpty()) "YOUR_GEMINI_API_KEY" else savedKey
     }
 
     /**
@@ -106,7 +106,7 @@ class GeminiSettingsStore(private val context: Context) {
  * Data class representing Gemini settings.
  */
 data class GeminiSettings(
-    val apiKey: String = "AIzaSyC6pjFguQ7FhJZn0dNx8WH0PtHFoCOR3nY",
+    val apiKey: String = "YOUR_GEMINI_API_KEY",
     val useGeminiForOcr: Boolean = true,
     val geminiEnabled: Boolean = true
 )
