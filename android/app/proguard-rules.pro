@@ -1,0 +1,5 @@
+-keep class com.googlecode.tesseract.** { *; }
+-keep class cz.adaptech.tesseract4android.** { *; }
+-keep class com.google.mlkit.** { *; }
+-keep class com.nammasanthe.ledger.data.entity.** { *; }
+-dontwarn org.bytedeco.**

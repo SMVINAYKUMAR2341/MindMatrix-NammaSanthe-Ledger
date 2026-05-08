@@ -1,0 +1,219 @@
+package com.nammasanthe.ledger.ui.screens
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.filled.Translate
+import androidx.compose.material.icons.filled.Language
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.nammasanthe.ledger.ocr.BillItem
+import com.nammasanthe.ledger.ocr.OcrLanguage
+import com.nammasanthe.ledger.viewmodel.OcrViewModel
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ScanResultScreen(
+    ocrViewModel : OcrViewModel,
+    onBack       : () -> Unit,
+    onRetry      : () -> Unit
+) {
+    val state by ocrViewModel.state.collectAsStateWithLifecycle()
+    val showLanguageDialog = remember { mutableStateOf(false) }
+    val currentLanguage = remember { mutableStateOf(OcrLanguage.UNKNOWN) }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Scan Result") },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
+                    }
+                }
+            )
+        }
+    ) { padding ->
+        Column(
+            modifier            = Modifier
+                .padding(padding)
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            // Progress and status
+            if (state.processing) LinearProgressIndicator(Modifier.fillMaxWidth())
+            state.error?.let   { Text("Error: $it",   color = Color(0xFFDC2626)) }
+            state.warning?.let { Text("Note: $it",    color = Color(0xFF8A5A00)) }
+
+            // Status chips
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                AssistChip(
+                    onClick = { /* TODO */ },
+                    label = { Text("Lang: ${state.language}") }
+                )
+                AssistChip(
+                    onClick = { /* TODO */ },
+                    label = { Text("Engine: ${state.source.ifBlank { "—" }}") }
+                )
+                AssistChip(
+                    onClick = { /* TODO */ },
+                    label = { Text("Conf: ${"%.0f".format(state.confidence * 100)}%") }
+                )
+            }
+
+            // Amount display
+            state.amount?.let { amount ->
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFF0FDF4))
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Detected Amount",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = Color(0xFF16A34A)
+                        )
+                        Text(
+                            text = "₹${"%,.2f".format(amount)}",
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF15803D)
+                        )
+                    }
+                }
+            }
+
+            // Parsed items display
+            if (state.parsedItems.isNotEmpty()) {
+                Text(
+                    text = "Parsed Bill Items (${state.parsedItems.size})",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                state.parsedItems.forEach { billItem ->
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFFFEF3C7))
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(12.dp)
+                        ) {
+                            Text(
+                                text = billItem.item,
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Medium
+                            )
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "Qty: ${billItem.quantity}",
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                                Text(
+                                    text = "₹${billItem.amount}",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Text fields
+            state.original?.let { original ->
+                Text(
+                    text = "Original Text",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                OutlinedTextField(
+                    value = original,
+                    onValueChange = { ocrViewModel.updateOriginal(it) },
+                    modifier = Modifier.fillMaxWidth(),
+                    label = { Text("Original OCR Text") },
+                    minLines = 3
+                )
+            }
+
+            state.translated?.let { translated ->
+                Text(
+                    text = "Translated Text",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                OutlinedTextField(
+                    value = translated,
+                    onValueChange = { ocrViewModel.updateTranslated(it) },
+                    modifier = Modifier.fillMaxWidth(),
+                    label = { Text("Translated Text") },
+                    minLines = 3
+                )
+            }
+
+            // Action buttons
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                OutlinedButton(
+                    onClick = onRetry,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(Icons.Default.Refresh, null)
+                    Spacer(Modifier.size(8.dp))
+                    Text("Retry OCR")
+                }
+                
+                OutlinedButton(
+                    onClick = { ocrViewModel.retranslate() },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(Icons.Default.Translate, null)
+                    Spacer(Modifier.size(8.dp))
+                    Text("Translate")
+                }
+                
+                Button(
+                    onClick = { ocrViewModel.saveScan() },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(Icons.Default.Save, null)
+                    Spacer(Modifier.size(8.dp))
+                    Text("Save")
+                }
+            }
+
+            // Parse bill button if no items parsed
+            if (state.parsedItems.isEmpty() && !state.translated.isNullOrBlank()) {
+                Button(
+                    onClick = { ocrViewModel.parseBill() },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Parse Bill Items")
+                }
+            }
+        }
+    }
+}

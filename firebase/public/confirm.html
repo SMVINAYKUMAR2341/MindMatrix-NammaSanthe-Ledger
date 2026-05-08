@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Transaction — Namma Santhe</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            color: #e2e8f0;
+        }
+
+        .container {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 24px;
+            padding: 32px 24px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .logo h1 {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #818cf8, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .logo p {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-credit {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .badge-payment {
+            background: rgba(34, 197, 94, 0.15);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 16px 0;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+        }
+
+        .detail-row:last-child { border-bottom: none; }
+
+        .detail-label {
+            font-size: 13px;
+            color: #94a3b8;
+        }
+
+        .detail-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #f1f5f9;
+        }
+
+        .amount-value {
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            padding: 16px 0;
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 8px;
+            font-family: inherit;
+        }
+
+        .btn-confirm {
+            background: linear-gradient(135deg, #6366f1, #818cf8);
+            color: white;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.5);
+        }
+
+        .btn-confirm:active { transform: translateY(0); }
+
+        .btn-confirm:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-reject {
+            background: transparent;
+            color: #94a3b8;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            margin-top: 10px;
+        }
+
+        .btn-reject:hover {
+            border-color: rgba(239, 68, 68, 0.5);
+            color: #f87171;
+        }
+
+        /* States */
+        .state { display: none; }
+        .state.active { display: block; }
+
+        .success-icon {
+            text-align: center;
+            font-size: 64px;
+            margin: 20px 0 16px;
+        }
+
+        .success-text {
+            text-align: center;
+            font-size: 20px;
+            font-weight: 700;
+            color: #4ade80;
+            margin-bottom: 8px;
+        }
+
+        .success-sub {
+            text-align: center;
+            font-size: 14px;
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+
+        .error-text {
+            text-align: center;
+            color: #f87171;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .security-note {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 16px;
+            padding: 10px 14px;
+            background: rgba(99, 102, 241, 0.08);
+            border-radius: 10px;
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+        .security-note svg {
+            flex-shrink: 0;
+            width: 16px;
+            height: 16px;
+            fill: #6366f1;
+        }
+
+        .already-confirmed {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .already-confirmed .icon { font-size: 48px; margin-bottom: 12px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="logo">
+        <h1>🏪 Namma Santhe</h1>
+        <p>Transaction Confirmation</p>
+    </div>
+
+    <!-- LOADING STATE -->
+    <div id="state-loading" class="state active">
+        <div style="text-align:center; padding: 40px 0;">
+            <div class="loading" style="width:40px;height:40px;border-width:4px;margin:0 auto 16px;"></div>
+            <p style="color:#94a3b8;">Loading transaction details...</p>
+        </div>
+    </div>
+
+    <!-- CONFIRM STATE -->
+    <div id="state-confirm" class="state">
+        <div style="text-align:center; margin-bottom: 8px;">
+            <span id="type-badge" class="badge"></span>
+        </div>
+
+        <div class="amount-value" id="amount-display"></div>
+
+        <div class="card">
+            <div class="detail-row">
+                <span class="detail-label">Transaction ID</span>
+                <span class="detail-value" id="txn-id"></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Type</span>
+                <span class="detail-value" id="txn-type"></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Vendor</span>
+                <span class="detail-value" id="vendor-name"></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Date</span>
+                <span class="detail-value" id="txn-date"></span>
+            </div>
+        </div>
+
+        <button class="btn btn-confirm" id="btn-confirm" onclick="confirmTransaction()">
+            ✓ Confirm Transaction
+        </button>
+
+        <button class="btn btn-reject" onclick="rejectTransaction()">
+            ✗ Reject — This is not my transaction
+        </button>
+
+        <div class="security-note">
+            <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+            <span>Secured with SHA-256 hash verification. This confirmation cannot be forged or reused.</span>
+        </div>
+    </div>
+
+    <!-- SUCCESS STATE -->
+    <div id="state-success" class="state">
+        <div class="success-icon">✅</div>
+        <div class="success-text">Transaction Confirmed!</div>
+        <div class="success-sub">
+            The vendor has been notified.<br>
+            A trust badge has been assigned to this transaction.
+        </div>
+        <div class="card" style="margin-top: 20px;">
+            <div class="detail-row">
+                <span class="detail-label">Status</span>
+                <span class="detail-value" style="color:#4ade80;">VERIFIED ✓</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Confirmed At</span>
+                <span class="detail-value" id="confirmed-at"></span>
+            </div>
+        </div>
+        <p style="text-align:center; color:#64748b; font-size:13px; margin-top:16px;">
+            You can safely close this page.
+        </p>
+    </div>
+
+    <!-- ALREADY CONFIRMED STATE -->
+    <div id="state-already" class="state">
+        <div class="already-confirmed">
+            <div class="icon">ℹ️</div>
+            <div class="success-text" style="color:#818cf8;">Already Confirmed</div>
+            <div class="success-sub">This transaction has already been confirmed.<br>No further action needed.</div>
+        </div>
+    </div>
+
+    <!-- ERROR STATE -->
+    <div id="state-error" class="state">
+        <div style="text-align:center; padding: 30px 0;">
+            <div style="font-size:48px; margin-bottom:12px;">❌</div>
+            <div class="error-text" id="error-message">Something went wrong</div>
+            <p style="color:#94a3b8; font-size:13px; margin-top:8px;" id="error-detail"></p>
+        </div>
+    </div>
+
+    <!-- REJECTED STATE -->
+    <div id="state-rejected" class="state">
+        <div style="text-align:center; padding: 30px 0;">
+            <div style="font-size:48px; margin-bottom:12px;">🚫</div>
+            <div class="error-text">Transaction Rejected</div>
+            <p style="color:#94a3b8; font-size:13px; margin-top:8px;">
+                The vendor will be notified that this transaction was rejected by the customer.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+<script>
+    // Firebase config — matches the Android app's google-services.json
+    const firebaseConfig = {
+        apiKey: "AIzaSyA0bTxS-vHsX3843D6b51nWjBsGVDrsHrE",
+        authDomain: "namma-santhe-ledger.firebaseapp.com",
+        projectId: "namma-santhe-ledger",
+        storageBucket: "namma-santhe-ledger.firebasestorage.app",
+        messagingSenderId: "640659980514",
+        appId: "1:640659980514:android:c1cc2edc4f270dab515ebb"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Parse URL parameters
+    const params = new URLSearchParams(window.location.search);
+    const txnId = params.get('txnId');
+    const amount = parseFloat(params.get('amt'));
+    const type = params.get('type');
+    const hash = params.get('hash');
+    const ts = params.get('ts');
+    const vendor = params.get('vendor') || 'Namma Santhe Vendor';
+    const userId = params.get('uid');
+
+    function showState(stateId) {
+        document.querySelectorAll('.state').forEach(s => s.classList.remove('active'));
+        document.getElementById(stateId).classList.add('active');
+    }
+
+    function formatDate(timestamp) {
+        const d = new Date(parseInt(timestamp));
+        return d.toLocaleDateString('en-IN', {
+            day: '2-digit', month: 'short', year: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        });
+    }
+
+    async function init() {
+        // Validate params
+        if (!txnId || isNaN(amount) || !type || !hash || !userId) {
+            showState('state-error');
+            document.getElementById('error-message').textContent = 'Invalid QR Code';
+            document.getElementById('error-detail').textContent = 'This QR code is missing required information.';
+            return;
+        }
+
+        try {
+            // Check if already confirmed
+            const docRef = db.collection('users').doc(userId)
+                            .collection('confirmations').doc(txnId);
+            const doc = await docRef.get();
+
+            if (doc.exists) {
+                showState('state-already');
+                return;
+            }
+
+            // Show confirmation UI
+            document.getElementById('txn-id').textContent = '#' + txnId;
+            document.getElementById('txn-type').textContent = type === 'CREDIT' ? 'Credit (Given)' : 'Payment (Received)';
+            document.getElementById('amount-display').textContent = '₹' + amount.toFixed(2);
+            document.getElementById('vendor-name').textContent = decodeURIComponent(vendor);
+            document.getElementById('txn-date').textContent = ts ? formatDate(ts) : 'Today';
+
+            const badge = document.getElementById('type-badge');
+            badge.textContent = type;
+            badge.className = 'badge ' + (type === 'CREDIT' ? 'badge-credit' : 'badge-payment');
+
+            showState('state-confirm');
+        } catch (e) {
+            showState('state-error');
+            document.getElementById('error-message').textContent = 'Connection Error';
+            document.getElementById('error-detail').textContent = 'Could not connect to the server. Please check your internet.';
+        }
+    }
+
+    async function confirmTransaction() {
+        const btn = document.getElementById('btn-confirm');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="loading"></span> Confirming...';
+
+        try {
+            const docRef = db.collection('users').doc(userId)
+                            .collection('confirmations').doc(txnId);
+
+            await docRef.set({
+                txnId: txnId,
+                amount: amount,
+                type: type,
+                hash: hash,
+                confirmedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                confirmedAtMs: Date.now(),
+                trustLevel: 'VERIFIED',
+                source: 'web',
+                userAgent: navigator.userAgent
+            });
+
+            document.getElementById('confirmed-at').textContent = new Date().toLocaleString('en-IN');
+            showState('state-success');
+        } catch (e) {
+            btn.disabled = false;
+            btn.innerHTML = '✓ Confirm Transaction';
+            showState('state-error');
+            document.getElementById('error-message').textContent = 'Confirmation Failed';
+            document.getElementById('error-detail').textContent = e.message || 'Please try again.';
+        }
+    }
+
+    async function rejectTransaction() {
+        try {
+            const docRef = db.collection('users').doc(userId)
+                            .collection('confirmations').doc(txnId);
+            await docRef.set({
+                txnId: txnId,
+                amount: amount,
+                type: type,
+                hash: hash,
+                confirmedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                confirmedAtMs: Date.now(),
+                trustLevel: 'REJECTED',
+                source: 'web',
+                userAgent: navigator.userAgent
+            });
+            showState('state-rejected');
+        } catch (e) {
+            showState('state-rejected');
+        }
+    }
+
+    // Initialize on load
+    init();
+</script>
+
+</body>
+</html>
